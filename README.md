@@ -1,2 +1,4 @@
 # Learning-PHP
-Discoveries on how to writing better PHP code
+Tips on how to write better PHP code
+
+## Contents
