@@ -28,6 +28,8 @@ $input = $_POST['userInput1'] ?? $_POST['userInput2'] ?? $_POST['userInput3'] ??
 
 # 2. Low level of indentation
 
+Original code
+
 ```
 public function filterReport($postData)
 {
@@ -179,6 +181,8 @@ protected function filterReportUser()
 ```
 
 # 3. Wrap primitives
+
+Original code
 
 ```
 public function get_logs(
