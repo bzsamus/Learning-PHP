@@ -1,6 +1,6 @@
-#1. Make use of conditional operators
+# 1. Make use of conditional operators
 
-##Elvis operator
+## Elvis operator
 
 ```
 if ($_POST['userInput']) {
@@ -26,7 +26,7 @@ $input = $_POST['userInput1'] ?? $_POST['userInput2'] ?? $_POST['userInput3'] ??
 
 
 
-#2. Low level of indentation
+# 2. Low level of indentation
 
 ```
 public function filterReport($postData)
@@ -178,7 +178,7 @@ protected function filterReportUser()
 }
 ```
 
-#3. Wrap primitives
+# 3. Wrap primitives
 
 ```
 public function get_logs(
