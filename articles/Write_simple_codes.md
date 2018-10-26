@@ -185,11 +185,45 @@ protected function filterReportUser()
 Original code
 
 ```
-public function get_logs(
+public function getLogs(
     $filter = ' 1=1 ',
     $offset = 0,
     $limit = 5,
-    $sort_by = 'datetime',
-    $sort_order = 'desc'
+    $sortBy = 'datetime',
+    $sortOrder = 'desc'
 )
+{
+  // retrieve logs
+}
+
+// get logs
+$logs = getLogs(null, 0, 5, 'datetime', 'asc');
+```
+If we see the above getLogs function it will be really hard to guess what each parameters passed to the function represent.
+We can wrap the parameters into a class to make the function clearer.
+
+```
+class Pagination
+{
+  protected $filter;
+  protected $offset;
+  protected $limit;
+  protected $sortBy;
+  protected $sortOrder;
+  
+ // getter and setters
+ ...
+}
+
+public function getLogs(Pagination $pagination)
+{
+  // retrieve logs
+}
+
+$pagination = new Pagination();
+$pagination->setOffset(0);
+$pagination->setLimit(5);
+$pagination->setSortBy('datetime');
+$pagination->setSortOrder('asc');
+$logs = getLogs($pagination);
 ```
