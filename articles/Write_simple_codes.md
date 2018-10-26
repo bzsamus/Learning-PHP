@@ -228,3 +228,130 @@ $pagination->setSortOrder('asc');
 $logs = getLogs($pagination);
 ```
 Although this approach requires more code but it makes calls to the getLogs function much easier to understand and less prone to errors.
+
+
+# 4. Refactor switch statement
+We have a switch statement that assign id and name variable based on the report by type.
+```
+// fetch result from db
+$result = $query->row_array();
+switch ($reportByType) {
+    case REPORT_BY_USER:
+        $id     = $result['userid'];
+        $name   = $result['firstname'] . ' ' . $result['surname'];
+    break;
+    case REPORT_BY_CAMPAIGN:
+        $id     = $result['campaign_id'];
+        $name   = $result['campaign_name'];
+    break;
+    case REPORT_BY_ACCOUNT:
+    default:
+        $id     = $result['accountid'];
+        $name   = $result['name'];
+    break;
+}
+```
+This looks ok because there are only 3 types of report by attributes. Now every time if we want to add another report by attributes we will add a new case to the switch statement, this will get messy pretty quickly.
+
+Refactor using strategy pattern
+ReportInfo class will store the information we needed from the result
+
+```
+class ReportInfo
+{
+    protected $id;
+    protected $name;
+}
+```
+Interface which every report type will implement
+```
+interface ReportByInterface {
+    public function getId($reportData);
+    public function getName($reportData);
+}
+```
+Report by user type
+```
+class ReportByUser implements ReportByInterface
+{
+    public function getId($reportData)
+    {
+        return $reportData['userid'];
+    }
+    
+    public function getName($reportData)
+    {
+        return $reportData['firstname'] . ' ' . $reportData['surname'];
+    }
+}
+```
+Report by campaign type
+```
+class ReportByCampaign implements ReportByInterface
+{
+    public function getId($reportData)
+    {
+        return $reportData['campaign_id'];
+    }
+    
+    public function getName($reportData)
+    {
+        return $reportData['campaign_name'];
+    }
+}
+```
+Report by account type
+```
+class ReportByAccount implements ReportByInterface
+{
+    public function getId($reportData)
+    {
+        return $reportData['accountid'];
+    }
+    
+    public function getName($reportData)
+    {
+        return $reportData['name'];
+    }
+}
+```
+Report by factory
+```
+class ReportBy
+{
+    protected $report;
+    
+    public function __construct($reportById) {
+        switch ($reportById) {
+            case REPORT_BY_USER: 
+                $this->report = new ReportByUser();
+            break;
+            case REPORT_BY_CAMPAIGN: 
+                $this->report = new ReportByCampaign();
+            break;
+            case REPORT_BY_ACCOUNT: 
+                $this->report = new ReportByAccount();
+            break;
+        }
+    }
+    
+    public function getId($reportData)
+    {
+        return $this->report->getId($reportData);
+    }
+    
+    public function getName($reportData)
+    {
+        return $this->report->getName($reportData);
+    }
+}
+```
+We moved the switch statement to the dactory class so original code will be clean and easy to read.
+```
+// fetch result from db
+$result = $query->row_array();
+$report = new ReportBy($reportByType);
+$id     = $report->getId($result);
+$result = $report->getName($result);
+```
+Every time we want to add a new report by type we will add a new ReportByType class which implements ReportByInterface then we add the new report type to the switch statement inside the factory class so the original code stays clean.
