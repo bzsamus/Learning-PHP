@@ -227,3 +227,4 @@ $pagination->setSortBy('datetime');
 $pagination->setSortOrder('asc');
 $logs = getLogs($pagination);
 ```
+Although this approach requires more code but it makes calls to the getLogs function much easier to understand and less prone to errors.
